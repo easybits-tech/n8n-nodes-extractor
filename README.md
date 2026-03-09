@@ -21,10 +21,15 @@ Follow the [n8n community nodes installation guide](https://docs.n8n.io/integrat
 The package name is: `n8n-nodes-easybits-extractor`
 
 ## What can you build with this node?
+
 This node is designed for high-stakes, production-grade document automation:
+
 **Accounting & Order Processing:** Automate the extraction of key data points from order and invoice documents for inventory management and accounting.
+
 **Digital Document Archiving:** Automate the extraction and classification of relevant information for structured storage in public administration Document Management Systems (DMS).
+
 **Claims Processing for Insurers:** Automate FNOL (First Notice of Loss) capture and extract structured data from messy claims documents.
+
 **Medical Reports:** Extract critical findings from medical reports and handwritten doctor prescriptions.
 
 ## Supported file formats
