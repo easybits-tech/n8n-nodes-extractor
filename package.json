@@ -1,0 +1,35 @@
+{
+	"name": "n8n-nodes-extractor",
+	"version": "1.0.0",
+	"description": "n8n-node for using easybits extractor in workflows",
+	"keywords": ["n8n-community-node-package"],
+	"license": "MIT",
+	"author": {
+		"name": "Ivan Afonchenko",
+		"email": "ivan@easybits.tech"
+	},
+	"main": "dist/nodes/EasybitsExtractor/EasybitsExtractor.node.js",
+	"files": ["dist"],
+	"scripts": {
+		"build": "n8n-node build",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"prepublishOnly": "n8n-node build"
+	},
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"nodes": [
+			"dist/nodes/EasybitsExtractor/EasybitsExtractor.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "*",
+		"eslint": "^9.0.0",
+		"prettier": "^3.0.0",
+		"typescript": "^5.0.0"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
