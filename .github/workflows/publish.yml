@@ -1,13 +1,17 @@
-name: Bootstrap publish to npm
+name: Publish to npm
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - uses: actions/checkout@v5
@@ -21,6 +25,4 @@ jobs:
       - run: npm run build --if-present
       - run: npm test --if-present
 
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish
