@@ -1,15 +1,23 @@
 {
-	"name": "n8n-nodes-extractor",
+	"name": "@easybits/n8n-nodes-extractor",
 	"version": "1.0.0",
 	"description": "n8n-node for using easybits extractor in workflows",
-	"keywords": ["n8n-community-node-package"],
+	"keywords": ["n8n-community-node-package", "easybits"],
 	"license": "MIT",
 	"author": {
 		"name": "Ivan Afonchenko",
 		"email": "ivan@easybits.tech"
 	},
 	"main": "dist/nodes/EasybitsExtractor/EasybitsExtractor.node.js",
-	"files": ["dist"],
+	"files": ["dist", "README.md", "LICENSE"],
+	"publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+	"repository": {
+    "type": "git",
+    "url": "https://github.com/easybits-tech/n8n-nodes-extractor.git"
+  },
 	"scripts": {
 		"build": "n8n-node build",
 		"dev": "n8n-node dev",
