@@ -34,6 +34,9 @@
 	},
 	"n8n": {
 		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/EasybitsExtractorApi.credentials.js"
+		],
 		"nodes": [
 			"dist/nodes/EasybitsExtractor/EasybitsExtractor.node.js"
 		]

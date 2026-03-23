@@ -36,7 +36,7 @@ export class EasybitsExtractor implements INodeType {
 		usableAsTool: true,
 		version: 1,
 		subtitle:
-			'={{$parameter["inputType"] === "binaryFiles" ? "Binary Files" : $parameter["inputType"] === "dataUrls" ? "Data URLs" : "Auto (Both)"}}',
+			'={{$parameter["inputType"] === "binaryFiles" ? "Binary Files" : $parameter["inputType"] === "dataUrls" ? "Data URLs" : "Auto"}}',
 		description:
 			'Sends files to the easybits Extractor API for data extraction. Supports binary file attachments and base64 Data URLs as input.',
 		defaults: {
@@ -44,25 +44,13 @@ export class EasybitsExtractor implements INodeType {
 		},
 		inputs: [NodeConnectionTypes.Main],
 		outputs: [NodeConnectionTypes.Main],
+		credentials: [
+			{
+				name: 'easybitsExtractorApi',
+				required: true,
+			},
+		],
 		properties: [
-			{
-				displayName: 'Pipeline ID',
-				name: 'pipelineId',
-				type: 'string',
-				default: '',
-				required: true,
-				placeholder: 'e.g. abc123',
-				description: 'The easybits Extractor pipeline ID to send files to',
-			},
-			{
-				displayName: 'API Key',
-				name: 'apiKey',
-				type: 'string',
-				typeOptions: { password: true },
-				default: '',
-				required: true,
-				description: 'API key for the easybits Extractor',
-			},
 			{
 				displayName: 'Input Type',
 				name: 'inputType',
@@ -168,8 +156,9 @@ export class EasybitsExtractor implements INodeType {
 			}
 		}
 
-		const pipelineId = this.getNodeParameter('pipelineId', 0) as string;
-		const apiKey = this.getNodeParameter('apiKey', 0) as string;
+		const credentials = await this.getCredentials('easybitsExtractorApi');
+		const pipelineId = credentials.pipelineId as string;
+		const apiKey = credentials.apiKey as string;
 
 		const responseData = await this.helpers.httpRequest({
 			method: 'POST',
@@ -181,6 +170,6 @@ export class EasybitsExtractor implements INodeType {
 			body: { files: dataUrls },
 		});
 
-		return [[{ json: responseData }]];
+		return [[{ json: responseData, pairedItem: { item: 0 } }]];
 	}
 }

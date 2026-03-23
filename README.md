@@ -1,6 +1,6 @@
-# n8n-nodes-extractor
+# @easybits/n8n-nodes-extractor
 
-[![npm version](https://img.shields.io/npm/v/n8n-nodes-easybits-extractor.svg)](https://www.npmjs.com/package/n8n-nodes-easybits-extractor)
+[![npm version](https://img.shields.io/npm/v/@easybits%2Fn8n-nodes-extractor.svg)](https://www.npmjs.com/package/@easybits/n8n-nodes-extractor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 n8n community node that sends documents to the [Easybits Extractor](https://extractor.easybits.tech) API for structured data extraction.
@@ -18,7 +18,7 @@ Here is the standard flow:
 
 Follow the [n8n community nodes installation guide](https://docs.n8n.io/integrations/community-nodes/installation/).
 
-The package name is: `n8n-nodes-easybits-extractor`
+The package name is: `@easybits/n8n-nodes-extractor`
 
 ## What can you build with this node?
 
@@ -38,18 +38,27 @@ This node is designed for high-stakes, production-grade document automation:
 
 ## Configuration
 
-| Parameter          | Description                                                              |
+### Credential
+
+Both **Pipeline ID** and **API Key** are configured in the credential dialog. Each Easybits Extractor pipeline has its own API key, so bundling them together prevents accidental mismatches. The credential also includes a built-in connection test.
+
+| Credential Field   | Description                                                              |
 | ------------------ | ------------------------------------------------------------------------ |
 | **Pipeline ID**    | The ID of your extraction pipeline, obtained from Easybits Extractor     |
 | **API Key**        | Your API key from the Easybits Extractor dashboard (stored as a secret)  |
-| **Input Type**     | How files are provided: **Binary Files** (default), **Data URLs**, or **Auto (Both)** |
+
+### Node parameters
+
+| Parameter          | Description                                                              |
+| ------------------ | ------------------------------------------------------------------------ |
+| **Input Type**     | How files are provided: **Binary Files** (default), **Data URLs**, or **Auto** |
 | **Data URL Field** | JSON field name containing base64 Data URL(s). Shown when Input Type is Data URLs or Auto. Default: `dataUrl` |
 
 ### Input types
 
 - **Binary Files** — reads binary attachments from input items (e.g. from Read Binary File, HTTP Request, or email trigger nodes). This is the default and matches the original behavior.
 - **Data URLs** — reads pre-encoded base64 Data URLs from a JSON field on each item. Useful when you already have Data URLs from a previous API response or a Set node.
-- **Auto (Both)** — collects both binary attachments and Data URLs from the same items. Handy when mixing sources.
+- **Auto** — collects both binary attachments and Data URLs from the same items. Handy when mixing sources.
 
 ## How it works
 
@@ -70,8 +79,7 @@ Use **Read Binary File** to load a document, then connect it to easybits Extract
 
 Extractor settings:
 - **Input Type**: Binary Files
-- **Pipeline ID**: your pipeline ID
-- **API Key**: your API key
+- **Credential**: select your Easybits Extractor credential (Pipeline ID + API Key)
 
 ### Extract data from multiple files
 
@@ -142,7 +150,7 @@ Set **Data URL Field** to `response.attachments.0.url`.
 
 ### Mix binary files and Data URLs
 
-Use **Auto (Both)** to collect from both sources at once.
+Use **Auto** to collect from both sources at once.
 
 ```
 [Read Binary File] ──┐
@@ -151,7 +159,7 @@ Use **Auto (Both)** to collect from both sources at once.
 ```
 
 Extractor settings:
-- **Input Type**: Auto (Both)
+- **Input Type**: Auto
 - **Data URL Field**: the field name for items that carry Data URLs
 
 Binary attachments are converted to Data URLs automatically; JSON Data URLs are passed through as-is. Everything is sent in one API call.
