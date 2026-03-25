@@ -1,6 +1,6 @@
 {
 	"name": "@easybits/n8n-nodes-extractor",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "n8n-node for using easybits extractor in workflows",
 	"keywords": [
 		"n8n-community-node-package",
