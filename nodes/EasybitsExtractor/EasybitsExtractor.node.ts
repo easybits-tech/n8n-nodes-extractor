@@ -34,7 +34,8 @@ export class EasybitsExtractor implements INodeType {
 		icon: 'file:easybitsExtractorLogo.svg',
 		group: ['transform'],
 		usableAsTool: true,
-		version: 2,
+		version: [1, 2],
+		defaultVersion: 2,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description:
 			'Sends files to the easybits Extractor API for data extraction. Supports binary file attachments and base64 Data URLs as input.',
