@@ -2,7 +2,10 @@ import {
 	IExecuteFunctions,
 	INodeExecutionData,
 	INodeType,
+	IDataObject,
 	INodeTypeDescription,
+	JsonObject,
+	NodeApiError,
 	NodeConnectionTypes,
 	NodeOperationError,
 } from 'n8n-workflow';
@@ -36,7 +39,7 @@ export class EasybitsExtractor implements INodeType {
 		usableAsTool: true,
 		version: [1, 2],
 		defaultVersion: 2,
-		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+		subtitle: '={{$parameter["resource"] + ": " + $parameter["operation"]}}',
 		description:
 			'Sends files to the easybits Extractor API for data extraction. Supports binary file attachments and base64 Data URLs as input.',
 		defaults: {
@@ -143,6 +146,7 @@ export class EasybitsExtractor implements INodeType {
 
 		if (resource === 'document' && operation === 'extract') {
 			const items = this.getInputData();
+			const returnData: INodeExecutionData[] = [];
 			const dataUrls: string[] = [];
 			const inputType = this.getNodeParameter('inputType', 0) as string;
 			const collectBinaries = inputType === 'binaryFiles' || inputType === 'auto';
@@ -197,6 +201,10 @@ export class EasybitsExtractor implements INodeType {
 					}
 				} catch (error) {
 					if (this.continueOnFail()) {
+						returnData.push({
+							json: { error: (error as Error).message },
+							pairedItem: { item: itemIndex },
+						});
 						continue;
 					}
 					if (error instanceof NodeOperationError) {
@@ -208,21 +216,39 @@ export class EasybitsExtractor implements INodeType {
 				}
 			}
 
-			const credentials = await this.getCredentials('easybitsExtractorApi');
-			const pipelineId = credentials.pipelineId as string;
-			const apiKey = credentials.apiKey as string;
+			if (dataUrls.length > 0) {
+				const credentials = await this.getCredentials('easybitsExtractorApi');
+				const pipelineId = credentials.pipelineId as string;
 
-			const responseData = await this.helpers.httpRequest({
-				method: 'POST',
-				url: `https://extractor.easybits.tech/api/pipelines/${pipelineId}`,
-				headers: {
-					Authorization: `Bearer ${apiKey}`,
-					'Content-Type': 'application/json',
-				},
-				body: { files: dataUrls },
-			});
+				try {
+					const responseData =
+						await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'easybitsExtractorApi',
+							{
+								method: 'POST',
+								url: `https://extractor.easybits.tech/api/pipelines/${pipelineId}`,
+								body: { files: dataUrls },
+							},
+						);
 
-			return [[{ json: responseData, pairedItem: { item: 0 } }]];
+					returnData.push({
+						json: responseData as IDataObject,
+						pairedItem: items.map((_, i) => ({ item: i })),
+					});
+				} catch (error) {
+					if (this.continueOnFail()) {
+						returnData.push({
+							json: { error: (error as Error).message },
+							pairedItem: items.map((_, i) => ({ item: i })),
+						});
+					} else {
+						throw new NodeApiError(this.getNode(), error as JsonObject);
+					}
+				}
+			}
+
+			return [returnData];
 		}
 
 		throw new NodeOperationError(
